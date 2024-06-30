@@ -24,8 +24,8 @@
                             <div class="job_details_header">
                                 <div class="single_jobs white-bg d-flex justify-content-between">
                                     <div class="jobs_left d-flex align-items-center">
-                                        <div class="jobs_conetent">                                    
-                                            <h4>Applicants</h4>                                    
+                                        <div class="jobs_conetent">
+                                            <h4>Applicants</h4>
                                         </div>
                                     </div>
                                     <div class="jobs_right"></div>
@@ -48,7 +48,7 @@
                                             <td>
                                                 {{ \Carbon\Carbon::parse($application->applied_date)->format('d M, Y') }}
                                             </td>
-                                        </tr> 
+                                        </tr>
                                         @endforeach
                                         @else
                                         <tr>
@@ -63,14 +63,14 @@
                             {{ $applications->links() }}
                         </div>
                     </div>
-                </div>                
+                </div>
             </div>
         </div>
     </div>
 </section>
 @endsection
 @section('customJs')
-<script type="text/javascript">   
+<script type="text/javascript">
 function removeJob(id) {
     if (confirm("Are you sure you want to remove?")) {
         $.ajax({
@@ -82,7 +82,7 @@ function removeJob(id) {
                 window.location.href='{{ route("account.jobApplication") }}';
             }
         });
-    } 
+    }
 }
 </script>
 @endsection

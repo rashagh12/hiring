@@ -27,7 +27,7 @@
                                         <h3 class="fs-4 mb-1">Categories</h3>
                                     </div>
                                     <div style="margin-top: -10px;">
-                                        <a href="{{ route('admin.category.create') }}" class="btn btn-primary">Add Category</a>
+                                        <a href="{{ route('admin.category.create') }}" class="btn Explore">Add Category</a>
                                     </div>
                                     
                                 </div>
@@ -42,7 +42,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="border-0">
-                                            @if ($categories->isNotEmpty()) 
+                                            @if ($categories->isNotEmpty())
                                             @foreach ($categories as $category )
                                             <tr class="active">
                                                 <td>
@@ -52,22 +52,22 @@
                                                 <td>{{ $category->name }}</td>
                                             
                                                 <td>
-                                                {{ $category->status }} 
+                                                {{ $category->status }}
                                                 </td>
                                                 <td>
                                                     
                                                     <div class="d-flex mt-4">
                                                     <div style="margin-top: -10px; " >
-                                                        <a class="btn btn-outline-primary me-2" href="{{ route('admin.category.edit',$category->id) }}" type="submit">Edit</a>
+                                                        <a class="btn outline me-2" href="{{ route('admin.category.edit',$category->id) }}" type="submit">Edit</a>
                                                     </div>
                                                     <form action="{{ route('admin.category.delete',$category->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <div style="margin-top: -10px; ">
-                                                        <button type="submit" class="btn btn-primary">Delete</button>
+                                                        <button type="submit" class="btn Explore">Delete</button>
                                                     </div>
                                                 </form>
-                                                    </div>               
+                                                    </div>
                                                 </td>
                                             </tr>
                                             @endforeach

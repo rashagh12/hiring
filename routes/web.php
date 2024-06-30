@@ -7,6 +7,7 @@ use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\JobApplications;
 use App\Http\Controllers\admin\JobController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\ChatController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -68,9 +69,10 @@ Route::get('/account/{id}/edit', [HomeController::class, 'editejob'])->name('acc
 Route::put('/account/{id}/update', [HomeController::class, 'updatejob'])->name('account.updatejob')->middleware('checkRole');
 Route::delete('/account/deletejob/{id}', [HomeController::class, 'deletejob'])->name('account.deletejob')->middleware('checkRole');
 Route::get('/job-application', [HomeController::class, 'jobApplication'])->name('account.jobApplication');
-Route::delete('/remove-job-application/{id}',[HomeController::class,'removeJobs'])->name('account.removeJobs');   
-Route::get('/savedJobs',[HomeController::class,'savedJobs'])->name('account.savedJobs');   
-Route::delete('/removeJobs/{id}',[HomeController::class,'removesavedJobs'])->name('account.removeSavedJob');   
-Route::post('/account/cv',[JobsController::class,'updateProfilecv'])->name('account.updateProfilecv');   
+Route::delete('/remove-job-application/{id}',[HomeController::class,'removeJobs'])->name('account.removeJobs');
+Route::get('/savedJobs',[HomeController::class,'savedJobs'])->name('account.savedJobs');
+Route::delete('/removeJobs/{id}',[HomeController::class,'removesavedJobs'])->name('account.removeSavedJob');
+Route::post('/account/cv',[JobsController::class,'updateProfilecv'])->name('account.updateProfilecv');
 
-
+Route::get('/chatbot',[ChatController::class,'index'])->name('chatbot');
+Route::post('/compair',[ChatController::class,'comparison'])->name('compair');

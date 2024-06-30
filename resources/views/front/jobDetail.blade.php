@@ -80,13 +80,13 @@
                         <div class="border-bottom"></div>
                         <div class="pt-3 text-end">
                             {{-- <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModalcv" class="btn btn-secondary">Upload CV</a>   --}}
-                            <a href="#" onclick="savedJob({{ $job->id }});" class="btn btn-secondary">Save</a>  
+                            <a href="#" onclick="savedJob({{ $job->id }});" class="btn outline">Save</a>
 
                             @if (Auth::check())
                             {{-- <button type="button" onclick="applyJob({{ $job->id }})" data-bs-toggle="modal" data-bs-target="#exampleModalcv"  class="btn btn-primary">Apply</button> --}}
-                            <a href="{{ route('applyJob',$job->id) }}" data-bs-toggle="modal" data-bs-target="#exampleModalcv" class="btn btn-primary">Apply</a>
+                            <a href="{{ route('applyJob',$job->id) }}" data-bs-toggle="modal" data-bs-target="#exampleModalcv" class="btn Explore">Apply</a>
                         @else
-                            <a href="javascript:void(0);" class="btn btn-primary disabled">Login to Apply</a>
+                            <a href="javascript:void(0);" class="btn Explore disabled">Login to Apply</a>
                         @endif
                         </div>
                     </div>
@@ -99,8 +99,8 @@
                         <div class="job_details_header">
                             <div class="single_jobs white-bg d-flex justify-content-between">
                                 <div class="jobs_left d-flex align-items-center">
-                                    <div class="jobs_conetent">                                    
-                                        <h4>Applicants</h4>                                    
+                                    <div class="jobs_conetent">
+                                        <h4>Applicants</h4>
                                     </div>
                                 </div>
                                 <div class="jobs_right"></div>

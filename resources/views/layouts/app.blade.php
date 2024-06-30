@@ -7,13 +7,14 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>HIRING</title>
+	<title>HIREEASILY</title>
 	<meta name="description" content="" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no" />
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="pinterest" content="nopin" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="{{ asset("assets/css/style.css") }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset("assets/css/style1.css") }}">
 
     {{-- <title>{{ config('app.name', 'Laravel') }}</title> --}}
 
@@ -28,7 +29,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-white shadow py-3">
             <div class="container">
-                <a class="navbar-brand" href="{{ route('home') }}">HIRING</a>
+                <a class="navbar-brand" href="{{ route('home') }}">HIREEASELY</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -36,19 +37,19 @@
                     <ul class="navbar-nav ms-0 ms-sm-0 me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" href="{{ route('home') }}">Home</a>
-                        </li>	
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" href="{{ route('jobs') }}">Find Jobs</a>
-                        </li>										
-                    </ul>	
+                        </li>
+                    </ul>
                     @guest
 
-                    @if (Route::has('login'))			
-                    <a class="btn btn-outline-primary me-2" href="{{ route('login') }}" type="submit">{{ __('Login') }}</a>
+                    @if (Route::has('login'))
+                    <a class="btn outline me-2" href="{{ route('login') }}" type="submit">{{ __('Login') }}</a>
                     @endif
 
                     @if (Route::has('register'))
-                    <a class="btn btn-primary" href="{{ route('register') }}" type="submit">{{ __('Register') }}</a>
+                    <a class="btn Explore" href="{{ route('register') }}" type="submit">{{ __('Register') }}</a>
                     @endif
                     @else
                     <div class="d-flex justify-content-end">
@@ -59,7 +60,7 @@
                             <i class="bi bi-person-circle"></i>
                         </a> --}}
                         @if (Auth::user()->role =='admin')
-                        <a class="btn btn-outline-primary me-2 d-flex justify-content-end " href="{{ route('admin.dashboard') }}" type="submit">Admin</a>				
+                        <a class="btn outline me-2 d-flex justify-content-end " href="{{ route('admin.dashboard') }}" type="submit">Admin</a>				
                         @else
                         <li class="nav-link " class="d-flex justify-content-end">
                             <a id="navbarDropdown" class="nav-link" href="{{ route('account.profile') }}" role="button" >
@@ -161,8 +162,8 @@
                     <input type="file" class="form-control" id="image"  name="image">
                 </div>
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary mx-3">Update</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn Explore mx-3">Update</button>
+                    <button type="button" class="btn outline" data-bs-dismiss="modal">Close</button>
                 </div>
                 
             </form>
@@ -184,12 +185,42 @@
             <form name="ProfilePicForm" id="ProfilePicForm" action="{{ route('account.updateProfilecv') }}" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     @csrf
+                    {{-- <div class="mb-3">
+                        <label for=""  class="form-label">Your name*</label>
+                        <input type="text" class="form-control @error('name') is-invalid @enderror"  required name="name" id="name">
+                        @error('name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                    </div> --}}
+
+                    <div class="mb-3">
+                        <label for=""  class="form-label"  >Your Marital Status*</label>
+                        <select name="marital" id="marital" class="form-control">
+                            @foreach ($maritalstatus as $maritalstatu)
+                            <option value="{{ $maritalstatu->id }}">{{ $maritalstatu->name }}</option>
+                            @endforeach
+                    
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for=""  class="form-label"  >Your Age*</label>
+                        <input type="text" class="form-control  @error('age') is-invalid @enderror"  required  name="age" id="age">
+
+                        @error('age')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                    </div>
                     <label for="cv" class="form-label">Enter Your CV</label>
                     <input type="file" class="form-control" id="cv"  name="cv">
                 </div>
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary mx-3">Upload</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn Explore mx-3">Upload</button>
+                    <button type="button" class="btn outline" data-bs-dismiss="modal">Close</button>
                 </div>
                 
             </form>
@@ -204,12 +235,12 @@
             <div class="row">
                 <div class="col-md-6 col-lg-4">
                     <h2 class="text-light">
-                        HIRING
+                        HIREEASILY
                     </h2>
                     <p class="mb-3 text-light lh-lg">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente accusantium maxime, expedita op ditate cum unde quis pariatur necessitatibus suscipit porro totam?</p>
                     <div class="copyright">
                         Created By ARAM
-                        <div>&copy; 2024 - HIRING</div>
+                        <div>&copy; 2024 - HIREEASILY</div>
                     </div>
                 </div>
                 <div class="col-md-4  col-lg-2">
@@ -233,7 +264,7 @@
                     <div class="contact">
                         <h2 class="text-light">Contact Us</h2>
                         <p class="mb-3 text-light lh-lg">Lorem ipsum dolor sit amet consectet it odit quo, cs ad libero quisquam nam.</p>
-                        <a class="btn  btn-primary rounded-pill main-btn w-100 text-light" href="">HIRING@gmail.com</a>
+                        <a class="btn  Explore rounded-pill main-btn w-100 text-light" href="">HIREEASILY@gmail.com</a>
                         <ul class="d-flex mt-3 list-unstyled gap-4">
                             <li><a class="d-block text-light" href="">
                                 <i class="fa-lg bi bi-facebook"></i>
@@ -282,7 +313,7 @@
                 </div> --}}
             </div>
         </div>
-        </footer> 
+        </footer>
         <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
         <script src="{{ asset('assets/js/bootstrap.bundle.5.1.3.min.js') }}"></script>
         <script src="{{ asset('assets/js/instantpages.5.1.0.min.js') }}"></script>

@@ -133,7 +133,7 @@
                                 </div>
                             </div> 
                             <div class="card-footer  p-4">
-                                <button type="submit" class="btn btn-primary">Save Job</button>
+                                <button type="submit" class="btn Explore">Save Job</button>
                             </div>               
                     </div>
                 </form>

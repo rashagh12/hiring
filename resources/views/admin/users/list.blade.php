@@ -21,6 +21,13 @@
             <div class="col-lg-9">
                         @include('account.message')
                         <div class="card border-0 shadow mb-4 p-3">
+                            <div class="card-head m-3">
+                                <h2>Visitors:
+                                    @foreach ($projects as $project)
+                                        {{ $project->views }}
+                                    @endforeach
+                                </h2>
+                            </div>
                             <div class="card-body card-form">
                                 <div class="d-flex justify-content-between">
                                     <div>
@@ -37,7 +44,7 @@
                                             <tr>
                                                 <th scope="col">ID</th>
                                                 <th scope="col">Name</th>
-                                                <th scope="col">Emial</th>
+                                                <th scope="col">Email</th>
                                                 <th scope="col">Mobile</th>
                                                 <th scope="col">Tools</th>
                                                 {{-- <th scope="col">Action</th> --}}
@@ -63,16 +70,16 @@
                                                     
                                                     <div class="d-flex mt-4">
                                                     <div style="margin-top: -10px; " >
-                                                        <a class="btn btn-outline-primary me-2" href="{{ route('admin.users.edite',$user->id) }}" type="submit">Edit</a>
+                                                        <a class="btn outline me-2" href="{{ route('admin.users.edite',$user->id) }}" type="submit">Edit</a>
                                                     </div>
                                                     <form action="{{ route('admin.users.delete',$user->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <div style="margin-top: -10px; ">
-                                                        <button type="submit" class="btn btn-primary">Delete</button>
+                                                        <button type="submit" class="btn Explore">Delete</button>
                                                     </div>
                                                 </form>
-                                                    </div>               
+                                                    </div>
                                                 </td>
                                             </tr>
                                             @endforeach

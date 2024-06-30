@@ -1,0 +1,43 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.Explores{
+    color: #ffffff !important;
+    background: #7776B3 !important;
+    background: #7776B3 !important;
+    border: 2px solid #7776B3 !important;
+    position: fixed;
+}
+.hero{
+    margin: 30px;
+    padding: 40px;
+}
+.Explore{
+    color: #ffffff !important;
+    background: #7776B3 !important;
+    background: #7776B3 !important;
+    border: 2px solid #7776B3 !important;
+    
+}
+.outline{
+    color: #000000 !important;
+    background: #ffffff !important;
+    border: 2px solid #7776B3 !important;
+}
+.hero-bg-image{
+    height: 95vh !important;
+    width: 100% !important;
+    background-image: url('../images/back1.png') !important;
+    background-size: cover; /* تمتد لتغطية الشاشة بالكامل */
+    background-position: center; /* توسيط الصورة */
+    background-repeat: no-repeat; /* عدم تكرار الصورة */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+}
+.cv{
+    height: 40px;
+    width: 90px;
+}

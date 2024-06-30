@@ -31,10 +31,10 @@
                                         <label for="name" class="mb-2">Category Name</label>
                                         <input type="text" id="name" name="name"  class="form-control" value="{{ $category->name }}">
                                     </div>
-                            </div> 
+                            </div>
                             <div class="card-footer  p-4">
-                                <button type="submit" class="btn btn-primary">Update Category</button>
-                            </div>               
+                                <button type="submit" class="btn Explore">Update Category</button>
+                            </div>
                     </div>
                 </form>
                     

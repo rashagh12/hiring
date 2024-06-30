@@ -115,7 +115,7 @@
                                 </div>
                             </div> 
                             <div class="card-footer  p-4">
-                                <button type="submit" class="btn btn-primary">Update Job</button>
+                                <button type="submit" class="btn Explore">Update Job</button>
                             </div>               
                     </div>
                 </form>

@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.apps')
 
 @section('main')
 <div class="container my-5 mt-1">
     <div class="py-lg-2">&nbsp;</div>
     <div class="row d-flex justify-content-center">
-        <div class="col-md-5">
+        <div class="col-lg-8">
             <div class="card shadow border-0 p-5">
                 {{-- <div class="card-header">{{ __('Register') }}</div> --}}
                 <h1 class="h3 text-center">{{ __('Register') }}</h1>
@@ -16,7 +16,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name"  required autocomplete="name" autofocus>
 
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -65,7 +65,7 @@
 
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4 mt-2">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn Explore">
                                     {{ __('Register') }}
                                 </button>
                             </div>

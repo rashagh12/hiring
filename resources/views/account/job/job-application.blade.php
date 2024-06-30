@@ -56,15 +56,15 @@
                                                 <div class="job-status text-capitalize">Active</div>
                                                 @else
                                                 <div class="job-status text-capitalize">Block</div>
-                                                @endif                                    
+                                                @endif
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-center mt-1">
-                                                <a class="btn btn-outline-primary me-2" href="{{ route('jobDetail',$jobApplication->id) }}" type="submit">View</a>
+                                                <a class="btn outline me-2" href="{{ route('jobDetail',$jobApplication->id) }}" type="submit">View</a>
                                             <form action="{{ route('account.removeJobs',$jobApplication->id) }}" method="post">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-primary me-2 d-flex justify-content-center" onclick="removeJob({{ $jobApplication->id }})">Remove</button>
+                                                <button type="submit" class="btn Explore me-2 d-flex justify-content-center" onclick="removeJob({{ $jobApplication->id }})">Remove</button>
                                             </form>
                                         </div>
                                             </td>

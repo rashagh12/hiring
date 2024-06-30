@@ -55,15 +55,15 @@
                                                 <div class="job-status text-capitalize">Active</div>
                                                 @else
                                                 <div class="job-status text-capitalize">Block</div>
-                                                @endif                                    
+                                                @endif
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-center mt-1">
-                                                <a class="btn btn-outline-primary me-2" href="{{ route('jobDetail',$savedJob->id) }}" type="submit">View</a>
+                                                <a class="btn outline me-2" href="{{ route('jobDetail',$savedJob->id) }}" type="submit">View</a>
                                             <form action="{{ route('account.removeSavedJob',$savedJob->id) }}" method="post">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-primary me-2">Remove</button>
+                                                <button type="submit" class="btn Explore me-2">Remove</button>
                                                 {{-- <a class="btn btn-primary me-2" href=""  >Remove</a> --}}
                                             </form>
                                                 </div>
@@ -77,7 +77,7 @@
                                     @endif
                                     
                                     
-                                </tbody>                                
+                                </tbody>
                             </table>
                         </div>
                         <div>

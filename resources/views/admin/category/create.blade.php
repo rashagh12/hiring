@@ -30,14 +30,14 @@
                                         <label for="name" class="mb-2">Category Name<span class="req">*</span></label>
                                         <input type="text" placeholder="Category Name" id="name" name="name" class="form-control">
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                             <div class="card-footer  p-4">
-                                <button type="submit" class="btn btn-primary">Add Category</button>
-                            </div>              
+                                <button type="submit" class="btn Explore">Add Category</button>
+                            </div>
                         </div>
                     </form>
-            </div> 
+            </div>
             </div>
         </div>
     </div>

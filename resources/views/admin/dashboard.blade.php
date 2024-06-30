@@ -25,8 +25,6 @@
                                 <p class="h2">Welcome Administrator!!</p>
                             </div>
                         </div>
-
-        
             </div>
         </div>
     </div>

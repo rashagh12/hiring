@@ -50,10 +50,10 @@
                         <div class="mb-4">
                             <label for="" class="mb-2">Mobile*</label>
                             <input type="text" placeholder="Mobile" name="mobile" id="mobile" class="form-control" value="{{ $user->mobile }}" required>
-                        </div>                        
+                        </div>
                     </div>
                     <div class="card-footer  p-4">
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn Explore">Update</button>
                     </div>
                 </form>
                 </div>

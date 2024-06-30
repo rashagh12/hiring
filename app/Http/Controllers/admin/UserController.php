@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\counter;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,8 +13,12 @@ class UserController extends Controller
 {
     public function index() {
         $users = User::orderBy('created_at','DESC')->paginate(8);
+        $projects = counter::latest()->paginate(5);
+        counter::increment('views');
+
         return view('admin.users.list',[
-            'users' => $users
+            'users' => $users,
+            'projects' =>$projects
         ]);
     }
 

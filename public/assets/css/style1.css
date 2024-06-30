@@ -1,0 +1,29 @@
+.Explore{
+    color: #ffffff !important;
+    background: #7776B3 !important;
+    background: #7776B3 !important;
+    border: 2px solid #7776B3 !important;
+}
+.exploreme{
+    position: fixed !important;
+}
+.descri{
+    font-size: 5px !important;
+}
+.outline{
+    color: #000000 !important;
+    background: #ffffff !important;
+    border: 2px solid #7776B3 !important;
+}
+a:hover{
+    color: #7776B3 !important;
+}
+h2:after {
+    content: "";
+    position: absolute;
+    background-color: #482c64 !important;
+    width: 70px;
+    height: 4px;
+    bottom: 0px;
+    left: 0px;
+}

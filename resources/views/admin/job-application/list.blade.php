@@ -54,14 +54,14 @@
                                         </tr>
                                         @endforeach
                                     @endif
-                                </tbody>                                
+                                </tbody>
                             </table>
                         </div>
                         <div>
                             {{ $applications->links() }}
                         </div>
                     </div>
-                </div>                          
+                </div>
             </div>
         </div>
     </div>

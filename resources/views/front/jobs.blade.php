@@ -43,14 +43,14 @@
                                 @endforeach
                             @endif
                         </select>
-                    </div>                   
+                    </div>
                     <div class="mb-4">
                         <h2>Job Type</h2>
                             @foreach ($jobTypes as $jobType )
-                                <div class="form-check mb-2"> 
+                                <div class="form-check mb-2">
                                     <input class="form-check-input " name="job_type" type="checkbox" value="{{ $jobType->id }}" id="job_type{{ $jobType->id }}">    
                                     <label class="form-check-label " for="job_type{{ $jobType->id }}">{{ $jobType->name }}</label>
-                                </div>  
+                                </div>
                             @endforeach
                     </div>
                     <div class="mb-4">
@@ -69,16 +69,15 @@
                             <option value="10" {{ (Request::get('experience') == 10) ? 'selected' : ''  }}>10 Years</option>
                             <option value="10_plus" {{ (Request::get('experience') == '10_plus') ? 'selected' : ''  }}>10+ Years</option>
                         </select>
-                    </div>     
-                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
-                    <a href="{{ route("jobs") }}" class="btn btn-secondary mt-3">Reset</a>
-
+                    </div>
+                    <button class="btn Explore btn-lg" type="submit">Search</button>
+                    <a href="{{ route("jobs") }}" class="btn outline mt-3">Reset</a>
                 </div>
                 
             </form>
             </div>
             <div class="col-md-8 col-lg-9 ">
-                <div class="job_listing_area">                    
+                <div class="job_listing_area">
                     <div class="job_lists">
                     <div class="row">
                         @if ($jobs->isNotEmpty())
@@ -101,12 +100,12 @@
                                             <p class="mb-0">
                                                 <span class="fw-bolder"><i class="fa fa-usd"></i></span>
                                                 <span class="ps-1">{{ $job->salary }}</span>
-                                            </p>  
+                                            </p>
                                             @endif
                                         </div>
     
                                         <div class="d-grid mt-3">
-                                            <a href="{{ route('jobDetail',$job->id) }}" class="btn btn-primary btn-lg">Details</a>
+                                            <a href="{{ route('jobDetail',$job->id) }}" class="btn Explore btn-lg">Details</a>
                                         </div>
                                     </div>
                                 </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Mail\JobNotificationEmail;
+use App\Models\client;
 use App\Models\Job;
 use App\Models\JobType;
 use App\Models\SavedJob;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\JobApplication;
+use App\Models\MaritalStatus;
 use Illuminate\Support\Facades\Validator;
 
 class JobsController extends Controller
@@ -48,7 +50,7 @@ class JobsController extends Controller
             $jobTypeArray = explode(',',$request->jobType);
 
             $jobs = $jobs->whereIn('job_type_id',$jobTypeArray);
-        } 
+        }
 
         $jobs= $jobs->with(['jobType','category']);
 
@@ -69,7 +71,7 @@ class JobsController extends Controller
     public function detail($id){
 
         $job = Job::where([
-            'id' => $id, 
+            'id' => $id,
             'status' => 1
         ])->with(['jobType','category'])->first();
 
@@ -86,7 +88,7 @@ class JobsController extends Controller
         $applications= JobApplication::where('job_id',$id)->with('user')->get();
         
 
-        return view('front.jobDetail',[ 
+        return view('front.jobDetail',[
             'job' => $job,
             'count' =>$count,
             'applications' =>$applications,
@@ -176,67 +178,99 @@ class JobsController extends Controller
         ]);
     }
     
+    // public function updateProfilecv(Request $request) {
+    //     // dd($request->all());
+
+    //     $id = Auth::user()->id;
+    //     // You can not apply on a job twise
+    //     $jobApplicationCount = JobApplication::where([
+    //         'user_id' => Auth::user()->id,
+    //         'job_id' => $id
+    //     ])->count();
+
+    //     client::create([
+    //         'name'=>$request->name,
+    //         'marital_status'=>$request->marital,
+    //         'age'=>$request->age
+    //     ]);
+    //     $validator = Validator::make($request->all(),[
+    //         'cv' => 'required'
+    //     ]);
+    //     if ($validator->passes()) {
+
+    //         $cv = $request->cv;
+    //         $fileName= uniqid("cv_").".". $request->file('cv')->getClientOriginalExtension();
+    //         $request->file('cv')->move(public_path("cv"),$fileName);
+
+    //         File::delete(public_path('cv'.Auth::user()->cv));
+
+    //         User::where('id',$id)->update(['cv' => $fileName]);
+
+    //         // session()->flash('success','  successfully.');
+    //         return redirect()->back()->with("success","added Successfully");
+
+
+    //     }
+    //     if ($jobApplicationCount > 0) {
+    //         $message = 'You already applied on this job.';
+    //         session()->flash('error',$message);
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => $message
+    //         ]);
+    //     }
+
+
+    //     // File::delete(public_path('cv'.Auth::user()->cv));
+
+    //     // User::where('id',$id)->update(['cv' => $filename]);
+    //     // session()->flash('success','CV Uploaded successfully.');
+    //     // return redirect()->back();
+    // }
     public function updateProfilecv(Request $request) {
-        // dd($request->all());
+        $maritalstatus  = MaritalStatus::where('status',1)->get();
 
-        $id = Auth::user()->id;
-        // You can not apply on a job twise
+        $user = Auth::user();
+        $userId = $user->id;
+    
         $jobApplicationCount = JobApplication::where([
-            'user_id' => Auth::user()->id,
-            'job_id' => $id
+            'user_id' => $userId,
+            'job_id' => $request->job_id
         ])->count();
-
+    
         if ($jobApplicationCount > 0) {
-            $message = 'You already applied on this job.';
-            session()->flash('error',$message);
+            $message = 'You already applied for this job.';
+            session()->flash('error', $message);
             return response()->json([
                 'status' => false,
                 'message' => $message
             ]);
         }
-        
-        if ($jobApplicationCount > 0) {
-            $message = 'You already applied on this job.';
-            session()->flash('error',$message);
-            return response()->json([
-                'status' => false,
-                'message' => $message
-            ]);
-        }
-
-        $validator = Validator::make($request->all(),[
-            'cv' => 'required'
+        $validator = Validator::make($request->all(), [
+            'cv' => 'required|file|mimes:pdf,doc,docx|max:2048'
         ]);
-        if ($validator->passes()) {
-
-            $cv = $request->cv;
-            $fileName= uniqid("cv_").".". $request->file('cv')->getClientOriginalExtension();
-            $request->file('cv')->move(public_path("cv"),$fileName);
-
-            File::delete(public_path('cv'.Auth::user()->cv));
-
-            User::where('id',$id)->update(['cv' => $fileName]);
-
-            // session()->flash('success','  successfully.');
-            return redirect()->back()->with("success","added Successfully");
-
-            // return resp
-
-        // $data =new User();
-
-        // $cv=$request->cv;
-        // $filename=uniqid("cv_").'.'.$cv->getClientOriginalExtension();
-        // $request->cv->move(public_path("cv"),$filename);
-        // $data->cv=$filename;
-        // $data->save();
-
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+    
+        // client::create([
+        //     'name'=> $request->name,
+        //     'marital_status' => $request->marital,
+        //     'age' => $request->age
+        // ]);
+        $cv = $request->file('cv');
+        $fileName = uniqid("cv_") . "." . $cv->getClientOriginalExtension();
+        $cv->move(public_path("cv"), $fileName);
+    
+        if ($user->cv) {
+            File::delete(public_path('cv/' . $user->cv));
         }
 
-        // File::delete(public_path('cv'.Auth::user()->cv));
-
-        // User::where('id',$id)->update(['cv' => $filename]);
-        // session()->flash('success','CV Uploaded successfully.');
-        // return redirect()->back();
+        $user->update(['cv' => $fileName]);
+    
+        session()->flash('success', 'CV added successfully.');
+        return view('front.jobDetail',compact('maritalstatus'))->with('success', 'CV added successfully.');
+    
     }
 
     public function savedJob(Request $request) {
@@ -261,7 +295,7 @@ class JobsController extends Controller
             ])->count();
     
             if ($count > 0) {
-                // session()->flash('error','You already saved this job.');
+                session()->flash('error','You already saved this job.');
     
                 return redirect()->route('jobDetail',$job->id)->with("error","You already saved this job.");
             }
