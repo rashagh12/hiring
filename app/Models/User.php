@@ -21,8 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'image',
-        'role'
+        'phone',
+        'address',
+        'cv',
+        'marital_status_id',
+        'role_id',
     ];
 
     /**
@@ -41,10 +44,45 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    public function maritalstuts() {
-        return $this->belongsTo(MaritalStatus::class);
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+    public function maritalStatus()
+    {
+        return $this->belongsTo(MaritalStatuses::class);
+    }
+
+    public function jobs()
+    {
+        return $this->hasMany(Job::class);
+    }
+
+    public function jobApplications()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+
+    public function savedJobs()
+    {
+        return $this->hasMany(SavedJob::class);
+    }
+
+    public function isAdmin()
+    {
+        return $this->role && $this->role->name === 'Admin';
+    }
+
+    public function isUser()
+    {
+        return $this->role && $this->role->name === 'User';
+    }
+
+    public function isEmployer()
+    {
+        return $this->role && $this->role->name === 'Employer';
     }
 }

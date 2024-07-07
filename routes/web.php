@@ -1,17 +1,15 @@
 <?php
 
-use App\Http\Controllers\admin\CategoryController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JobsController;
-use App\Http\Controllers\admin\DashboardController;
-use App\Http\Controllers\admin\JobApplications;
-use App\Http\Controllers\admin\JobController;
-use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\JobApplicationsController;
+use App\Http\Controllers\Admin\JobController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ChatController;
-use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -24,55 +22,66 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Admin routes
+Route::group(['middleware' => ['role:Admin']], function() {
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+    Route::get('/admin/{id}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/admin/update', [UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/admin/delete/{id}', [UserController::class, 'deleteUser'])->name('admin.users.delete');
+    Route::get('/admin/cv/{id}', [UserController::class, 'viewCv'])->name('admin.users.cv');
+
+    Route::get('/admin/jobs', [JobController::class, 'index'])->name('admin.jobs');
+    Route::get('/admin/applicants', [JobApplicationsController::class, 'index'])->name('admin.jobs.applicants');
+
+    Route::get('/admin/category', [CategoryController::class, 'index'])->name('admin.category');
+    Route::get('/admin/category/create', [CategoryController::class, 'create'])->name('admin.category.create');
+    Route::post('/admin/category/save', [CategoryController::class, 'store'])->name('admin.category.save');
+    Route::get('/admin/category/{id}/edit', [CategoryController::class, 'edit'])->name('admin.category.edit');
+    Route::put('/admin/category/{id}', [CategoryController::class, 'update'])->name('admin.category.update');
+    Route::delete('/admin/category/{id}', [CategoryController::class, 'destroy'])->name('admin.category.delete');
 });
-Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');
-Route::get('/jobs',[JobsController::class,'index'])->name('jobs');
-Route::get('/jobs/detail/{id}',[JobsController::class,'detail'])->name('jobDetail');
-Route::post('/applyJob',[JobsController::class,'applyJob'])->name('applyJob');
-Route::post('/savedjob',[JobsController::class,'savedJob'])->name('savedJob');
 
-// 'middleware' => 'checkRole'
-    Route::get('/admin/dashboard',[DashboardController::class,'index'])->name('admin.dashboard')->middleware('checkRole');
-    Route::get('/admin/users',[UserController::class,'index'])->name('admin.users');
-    Route::get('/admin/{id}/edite',[UserController::class,'edite'])->name('admin.users.edite');
-    Route::put('/admin/update',[UserController::class,'update'])->name('admin.users.update');
-    Route::delete('/admin/delete/{id}',[UserController::class,'deleteuser'])->name('admin.users.delete');
-    Route::get('/admin/cv/{id}',[UserController::class,'viewcv'])->name('admin.users.cv');
+// User routes
+Route::group(['middleware' => ['role:User']], function() {
+    Route::get('/user', [HomeController::class, 'index'])->name('user.index');
+});
 
+// Employer routes
+Route::group(['middleware' => ['role:Employer']], function() {
+    Route::get('/employer', [HomeController::class, 'index'])->name('employer.index');
+});
 
-
-Route::get('/admin/jobs',[JobController::class,'index'])->name('admin.jobs');
-Route::get('/applicants',[JobApplications::class,'index'])->name('jobs.applicants');
-
-
-Route::get('/admin/category',[CategoryController::class,'index'])->name('admin.category');
-Route::get('/admin/category/create',[CategoryController::class,'createCategory'])->name('admin.category.create');
-Route::post('/admin/category/saveCategory',[CategoryController::class,'saveCategory'])->name('admin.category.save');
-Route::get('/admin/editCategory/{id}',[CategoryController::class,'editCategory'])->name('admin.category.edit');
-Route::put('/admin/updateCategory/{id}',[CategoryController::class,'updateCategory'])->name('admin.category.update');
-Route::delete('/admin/deleteCategory/{id}',[CategoryController::class,'deleteCategory'])->name('admin.category.delete');
-
-
-
+// Auth routes
 Auth::routes();
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/account/profile', [HomeController::class, 'profile'])->name('account.profile');
-Route::put('/account/update', [HomeController::class, 'updateprofile'])->name('account.update');
-Route::post('/account/update-profile-pic', [HomeController::class, 'updateProfilePic'])->name('account.updateProfilePic');
-Route::get('/account/create', [HomeController::class, 'createJob'])->name('account.create')->middleware('checkRole');
-Route::post('/account/saveJob', [HomeController::class, 'saveJob'])->name('account.saveJob')->middleware('checkRole');
-Route::get('/account/{id}', [HomeController::class, 'myJobs'])->name('account.myJobs')->middleware('checkRole');
-Route::get('/account/{id}/edit', [HomeController::class, 'editejob'])->name('account.editejob')->middleware('checkRole');
-Route::put('/account/{id}/update', [HomeController::class, 'updatejob'])->name('account.updatejob')->middleware('checkRole');
-Route::delete('/account/deletejob/{id}', [HomeController::class, 'deletejob'])->name('account.deletejob')->middleware('checkRole');
-Route::get('/job-application', [HomeController::class, 'jobApplication'])->name('account.jobApplication');
-Route::delete('/remove-job-application/{id}',[HomeController::class,'removeJobs'])->name('account.removeJobs');
-Route::get('/savedJobs',[HomeController::class,'savedJobs'])->name('account.savedJobs');
-Route::delete('/removeJobs/{id}',[HomeController::class,'removesavedJobs'])->name('account.removeSavedJob');
-Route::post('/account/cv',[JobsController::class,'updateProfilecv'])->name('account.updateProfilecv');
+// Common routes
+Route::get('/logout', [HomeController::class, 'logout'])->name('logout');
+Route::get('/jobs', [JobsController::class, 'index'])->name('jobs');
+Route::get('/jobs/detail/{id}', [JobsController::class, 'detail'])->name('job.detail');
+Route::post('/applyJob', [JobsController::class, 'applyJob'])->name('applyJob');
+Route::post('/savedjob', [JobsController::class, 'savedJob'])->name('savedJob');
+Route::post('/account/cv', [JobsController::class, 'updateProfilecv'])->name('account.updateProfilecv');
 
-Route::get('/chatbot',[ChatController::class,'index'])->name('chatbot');
-Route::post('/compair',[ChatController::class,'comparison'])->name('compair');
+// User account routes
+Route::group(['middleware' => ['auth']], function() {
+    Route::get('/account/profile', [HomeController::class, 'profile'])->name('account.profile');
+    Route::put('/account/update', [HomeController::class, 'updateProfile'])->name('account.update');
+    Route::post('/account/update-profile-pic', [HomeController::class, 'updateProfilePic'])->name('account.updateProfilePic');
+    Route::get('/account/create', [HomeController::class, 'createJob'])->name('account.create')->middleware('role:Employer');
+    Route::post('/account/saveJob', [HomeController::class, 'saveJob'])->name('account.saveJob')->middleware('role:Employer');
+    Route::get('/account/{id}', [HomeController::class, 'myJobs'])->name('account.myJobs')->middleware('role:Employer');
+    Route::get('/account/{id}/edit', [HomeController::class, 'editJob'])->name('account.editJob')->middleware('role:Employer');
+    Route::put('/account/{id}/update', [HomeController::class, 'updateJob'])->name('account.updateJob')->middleware('role:Employer');
+    Route::delete('/account/deletejob/{id}', [HomeController::class, 'deleteJob'])->name('account.deleteJob')->middleware('role:Employer');
+    Route::get('/job-application', [HomeController::class, 'jobApplication'])->name('account.jobApplication');
+    Route::delete('/remove-job-application/{id}', [HomeController::class, 'removeJobApplication'])->name('account.removeJobApplication');
+    Route::get('/savedJobs', [HomeController::class, 'savedJobs'])->name('account.savedJobs');
+    Route::delete('/removeJobs/{id}', [HomeController::class, 'removeSavedJob'])->name('account.removeSavedJob');
+});
+
+// Chat routes
+Route::get('/chatbot', [ChatController::class, 'index'])->name('chatbot');
+Route::post('/compare', [ChatController::class, 'comparison'])->name('compare');

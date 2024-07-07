@@ -4,40 +4,49 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateJobsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->foreignId('job_type_id')->constrained()->onDelete('cascade');
-            $table->string('salary')->nullable();
+            $table->text('description');
+            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('job_type_id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->integer('vacancy')->default(1);
             $table->string('location');
-            $table->text('description')->nullable();
-            $table->text('benefits')->nullable();
-            $table->text('responsibility')->nullable();
-            $table->text('qualifications')->nullable();
-            $table->text('keywords')->nullable();
-            $table->string('experience');
+            $table->decimal('salary', 10, 2);
             $table->string('company_name');
-            $table->string('company_location')->nullable();
-            $table->string('company_website')->nullable();
-            $table->integer('status')->default(1);
-            $table->integer('isFeatured')->default(0);
+            $table->text('benefits');
+            $table->text('responsibility');
+            $table->text('qualifications');
+            $table->text('keywords');
+            $table->text('experience');
+            $table->string('company_location');
+            $table->boolean('status')->default(1); // Adding status field
+            $table->boolean('isFeatured')->default(0); // Adding isFeatured field
             $table->timestamps();
+
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('job_type_id')->references('id')->on('job_types')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('jobs');
     }
-};
+}

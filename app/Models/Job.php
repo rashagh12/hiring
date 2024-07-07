@@ -8,37 +8,49 @@ use Illuminate\Database\Eloquent\Model;
 class Job extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'title',
-        'salary',
-        'location',
         'description',
+        'category_id',
+        'job_type_id',
+        'user_id',
+        'vacancy',
+        'location',
+        'salary',
+        'company_name',
+        'benefits',
         'responsibility',
         'qualifications',
         'keywords',
         'experience',
-        'company_name',
         'company_location',
-        'company_website',
-        'image',
+        'status',
+        'isFeatured',
     ];
-        public function jobType() {
-        return $this->belongsTo(JobType::class);
-    }
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function applications() {
+    public function jobType()
+    {
+        return $this->belongsTo(JobType::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function jobApplications()
+    {
         return $this->hasMany(JobApplication::class);
     }
 
-    public function user() {
-        return $this->belongsTo(User::class);
+    public function savedJobs()
+    {
+        return $this->hasMany(SavedJob::class);
     }
-    public function client(){
-        return $this->belongsTo(client::class);
-    }
-
 }

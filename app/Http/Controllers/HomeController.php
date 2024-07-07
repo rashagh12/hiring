@@ -35,7 +35,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('name','ASC')->where('status',1)->get();
+        $categories = Category::orderBy('name','ASC')->get();
         $newCategories = Category::where('status',1)->orderBy('name','ASC')->get();
 
         $featuredJobs = Job::where('status',1)
@@ -61,20 +61,20 @@ class HomeController extends Controller
         Auth::logout();
         return redirect()->route('home');
     }
-    
+
     public function profile(){
 
         $id = Auth::user()->id;
-        
+
         $user = User::where('id',$id)->first();
         return view('account.profile',[
             'user' => $user,
         ]);
     }
-    
-    
+
+
     public function updateprofile(Request $request){
-        
+
         $id = Auth::user()->id;
 
         $validator = Validator::make($request->all(),[
@@ -110,7 +110,7 @@ class HomeController extends Controller
             return redirect()->route('account.profile')->with('errots',$validator->errors());
         }
     }
-    
+
 
 
     public function updateProfilePic(Request $request) {
@@ -138,7 +138,7 @@ class HomeController extends Controller
             $image->cover(150, 150);
             $image->toPng()->save(public_path('/profile_pic/thumb/'.$imageName));
 
-            
+
             // Delete Old Profile Pic
             File::delete(public_path('/profile_pic/thumb/'.Auth::user()->image));
             File::delete(public_path('profile_pic'.Auth::user()->image));
@@ -151,7 +151,7 @@ class HomeController extends Controller
             //     'status' => true,
             //     'errors' => []
             // ]);
-            
+
             return redirect()->route('account.profile');
 
         } else {
@@ -174,7 +174,7 @@ class HomeController extends Controller
 
 
     public function saveJob(Request $request) {
-            
+
         $rules= [
             'title' => 'required|min:5|max:200',
             'category' => 'required',
@@ -232,20 +232,20 @@ class HomeController extends Controller
     public function myJobs($id){
         $jobs = Job::where('user_id',Auth::user()->id)->with('jobType')
 
-        ->orderBy('created_at','DESC')->paginate(10); 
+        ->orderBy('created_at','DESC')->paginate(10);
         return view('account.job.myjob',[
             'jobs' =>$jobs,
         ]);
     }
 
     public function editejob(Request $request, $id){
-    
+
         // $job = Job::findorFail($id);
         // compact('job')
         $categories = Category::orderBy('name','ASC')->where('status',1)->get();
 
         $jobTypes =  jobType::orderBy('name','ASC')->where('status',1)->get();
-        
+
         $job=Job::where([
             'user_id' => Auth::user()->id,
             'id'      =>$id
@@ -263,7 +263,7 @@ class HomeController extends Controller
     }
 
     public function updatejob(Request $request , $id) {
-            
+
         $rules= [
             'title' => 'required|min:5|max:200',
             'category' => 'required',
@@ -278,7 +278,7 @@ class HomeController extends Controller
             'qualifications' =>'required',
             'keywords' => 'required',
             'experience'=> 'required',
-        
+
 
         ];
 
@@ -322,7 +322,7 @@ class HomeController extends Controller
         return redirect()->route('account.create');
 
     }
-    
+
     public function jobApplication(){
         $jobApplications = JobApplication::where('user_id',Auth::user()->id)
         ->with(['job','job.jobType','job.applications'])
@@ -363,9 +363,9 @@ class HomeController extends Controller
     }
 
 
-    
+
     public function removesavedJobs($id){
-        
+
         $savedJob= SavedJob::findOrFail($id)->delete();
         if ($savedJob == null) {
             // session()->flash('error','Job not found');

@@ -10,7 +10,7 @@
                 <p>Thounsands of jobs available with one click.</p>
                 <p class="h5">what ever you want you will find it with us<br> all jobs you care about it </p>
                 <div class="banner-btn mt-5"><a href="#" class="btn Explore mb-4 mb-sm-0" >Explore Now</a></div>
-            
+
             </div>
         </div>
     </div>
@@ -48,12 +48,12 @@
                     @endif
                     </select>
                 </div>
-                
+
                 <div class=" col-md-3 mb-xs-3 mb-sm-3 mb-lg-0">
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn Explore btn-block">Search</button>
                     </div>
-                    
+
                 </div>
             </div>
             </form>
@@ -65,7 +65,7 @@
     <div class="container">
         <h2>Popular Categories</h2>
         <div class="row pt-5">
-        
+
             @foreach ($categories as $category)
             <div class="col-lg-4 col-xl-3 col-md-6">
                 <div class="single_catagory border reduios-4">
@@ -74,7 +74,7 @@
                 </div>
             </div>
             @endforeach
-            
+
 
         </div>
     </div>
@@ -111,7 +111,7 @@
                             <div class="card border-0 p-3 shadow mb-4">
                                 <div class="card-body">
                                     <h3 class="border-0 fs-5 pb-2 mb-0">{{ $latestJob->title }}</h3>
-                                    
+
                                     <p>{{ Str::words(strip_tags($latestJob->description), 5) }}</p>
 
                                     <div class="bg-light p-3 border">
@@ -132,7 +132,7 @@
                                     </div>
 
                                     <div class="d-grid mt-3">
-                                        <a href="{{ route('jobDetail',$latestJob->id) }}" class="btn Explore btn-lg">Details</a>
+                                        <a href="{{ route('job.detail',$latestJob->id) }}" class="btn Explore btn-lg">Details</a>
                                     </div>
                                 </div>
                             </div>
@@ -141,9 +141,9 @@
                     @endif
                     {{-- {{ $latestJobs->links() }} --}}
                     </div>
-                    
+
                 </div>
-                
+
             </div>
         </div>
     </div>

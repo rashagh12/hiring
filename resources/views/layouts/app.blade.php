@@ -53,14 +53,14 @@
                     @endif
                     @else
                     <div class="d-flex justify-content-end">
-                        
+
                     {{-- <li class="nav-link " class="d-flex justify-content-end">
                         <a id="navbarDropdown" class="nav-link" href="{{ route('account.profile') }}" role="button" >
                             {{ Auth::user()->name }}
                             <i class="bi bi-person-circle"></i>
                         </a> --}}
                         @if (Auth::user()->role =='admin')
-                        <a class="btn outline me-2 d-flex justify-content-end " href="{{ route('admin.dashboard') }}" type="submit">Admin</a>				
+                        <a class="btn outline me-2 d-flex justify-content-end " href="{{ route('admin.dashboard') }}" type="submit">Admin</a>
                         @else
                         <li class="nav-link " class="d-flex justify-content-end">
                             <a id="navbarDropdown" class="nav-link" href="{{ route('account.profile') }}" role="button" >
@@ -141,9 +141,38 @@
             </div>
         </nav>
 
-        
+
     </div> --}}
     <div>
+        <!-- Display all errors -->
+        @if ($errors->any())
+            <div class="container mt-3">
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
+        <!-- Display session messages -->
+        @if (session('success'))
+            <div class="container mt-3">
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="container mt-3">
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            </div>
+        @endif
         @yield('main')
     </div>
 
@@ -165,7 +194,7 @@
                     <button type="submit" class="btn Explore mx-3">Update</button>
                     <button type="button" class="btn outline" data-bs-dismiss="modal">Close</button>
                 </div>
-                
+
             </form>
             </div>
         </div>
@@ -174,60 +203,7 @@
 
 
     {{-- model for cv --}}
-    <div class="modal fade" id="exampleModalcv" tabindex="-1" aria-labelledby="exampleModalLabelcv" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title pb-0" id="exampleModalLabelcv">Upload your CV</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            <form name="ProfilePicForm" id="ProfilePicForm" action="{{ route('account.updateProfilecv') }}" method="post" enctype="multipart/form-data">
-                <div class="mb-3">
-                    @csrf
-                    {{-- <div class="mb-3">
-                        <label for=""  class="form-label">Your name*</label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror"  required name="name" id="name">
-                        @error('name')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                    </div> --}}
 
-                    <div class="mb-3">
-                        <label for=""  class="form-label"  >Your Marital Status*</label>
-                        <select name="marital" id="marital" class="form-control">
-                            @foreach ($maritalstatus as $maritalstatu)
-                            <option value="{{ $maritalstatu->id }}">{{ $maritalstatu->name }}</option>
-                            @endforeach
-                    
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for=""  class="form-label"  >Your Age*</label>
-                        <input type="text" class="form-control  @error('age') is-invalid @enderror"  required  name="age" id="age">
-
-                        @error('age')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                    </div>
-                    <label for="cv" class="form-label">Enter Your CV</label>
-                    <input type="file" class="form-control" id="cv"  name="cv">
-                </div>
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn Explore mx-3">Upload</button>
-                    <button type="button" class="btn outline" data-bs-dismiss="modal">Close</button>
-                </div>
-                
-            </form>
-            </div>
-        </div>
-        </div>
-    </div>
 
 
     <footer class="footer pt-5 pb-5 text-light text-center text-md-start bg-dark">
@@ -278,7 +254,7 @@
                         </ul>
                     </div>
                 </div>
-            
+
                 {{-- <div class="footer-col">
                     <h4>
                         Hiring
@@ -299,7 +275,7 @@
                     </h4>
                     <ul>
                         <li><a href="">FAQ</a></li>
-                        
+
                     </ul>
                 </div>
                 <div class="footer-col">

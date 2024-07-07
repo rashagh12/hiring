@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Mail\JobNotificationEmail;
-use App\Models\client;
+use App\Models\Client;
 use App\Models\Job;
 use App\Models\JobType;
 use App\Models\SavedJob;
@@ -14,304 +14,194 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\JobApplication;
-use App\Models\MaritalStatus;
+use App\Models\MaritalStatuses;
 use Illuminate\Support\Facades\Validator;
 
 class JobsController extends Controller
 {
-    //this method will show jobs page
-    public function index(Request $request){
-        $categories  = Category::where('status',1)->get();
+    // Show jobs page
+    public function index(Request $request)
+    {
+        $categories = Category::where('status', 1)->get();
+        $jobTypes = JobType::where('status', 1)->get();
+        $jobs = Job::where('status', 1);
 
-        $jobTypes    = JobType::where('status',1)->get();
-
-        $jobs        = Job::where('status',1);
-
-         // Search using keyword
-        if(!empty($request->keyword)){
+        // Search using keyword
+        if (!empty($request->keyword)) {
             $jobs = $jobs->where(function($query) use ($request) {
-                $query->orWhere('title','like','%'.$request->keyword.'%');
-                $query->orWhere('keywords','like','%'.$request->keyword.'%');
+                $query->orWhere('title', 'like', '%' . $request->keyword . '%')
+                    ->orWhere('keywords', 'like', '%' . $request->keyword . '%');
             });
         }
+
         // Search using location
-        if(!empty($request->location)) {
-            $jobs = $jobs->where('location',$request->location);
+        if (!empty($request->location)) {
+            $jobs = $jobs->where('location', $request->location);
         }
 
-         // Search using category
-        if(!empty($request->category)) {
-            $jobs = $jobs->where('category_id',$request->category);
+        // Search using category
+        if (!empty($request->category)) {
+            $jobs = $jobs->where('category_id', $request->category);
         }
 
-        $jobTypeArray = [];
         // Search using Job Type
-        if(!empty($request->jobType)) {
-            $jobTypeArray = explode(',',$request->jobType);
-
-            $jobs = $jobs->whereIn('job_type_id',$jobTypeArray);
+        if (!empty($request->jobType)) {
+            $jobTypeArray = explode(',', $request->jobType);
+            $jobs = $jobs->whereIn('job_type_id', $jobTypeArray);
         }
 
-        $jobs= $jobs->with(['jobType','category']);
+        $jobs = $jobs->with(['jobType', 'category']);
 
-        if($request->sort == '0') {
-            $jobs = $jobs->orderBy('created_at','ASC');
-        } else {
-            $jobs = $jobs->orderBy('created_at','DESC');
-        }
-        $jobs=$jobs->paginate(9);
+        // Sort jobs
+        $jobs = $jobs->orderBy('created_at', $request->sort == '0' ? 'ASC' : 'DESC');
 
-        return view('front.jobs',[
-            'categories'   => $categories,
-            'jobTypes'     => $jobTypes,
-            'jobs'         => $jobs,
+        $jobs = $jobs->paginate(9);
+        $maritalStatus = MaritalStatuses::all();
+
+        return view('front.jobs', [
+            'categories' => $categories,
+            'jobTypes' => $jobTypes,
+            'jobs' => $jobs,
+            'maritalStatus' => $maritalStatus
         ]);
     }
 
-    public function detail($id){
-
-        $job = Job::where([
-            'id' => $id,
-            'status' => 1
-        ])->with(['jobType','category'])->first();
+    public function detail($id)
+    {
+        $job = Job::where(['id' => $id, 'status' => 1])
+            ->with(['jobType', 'category'])
+            ->first();
 
         if ($job == null) {
             abort(404);
         }
 
-        $count = SavedJob::where([
-            // 'user_id' => Auth::user()->id,
-            'job_id' => $id
-        ])->count();
+        $count = SavedJob::where('job_id', $id)->count();
+        $applications = JobApplication::where('job_id', $id)->with('user')->get();
 
-        // fetch applicants
-        $applications= JobApplication::where('job_id',$id)->with('user')->get();
-        
-
-        return view('front.jobDetail',[
+        return view('front.jobDetail', [
             'job' => $job,
-            'count' =>$count,
-            'applications' =>$applications,
+            'count' => $count,
+            'applications' => $applications,
         ]);
     }
 
+    public function applicants($id)
+    {
+        $applications = JobApplication::where('job_id', $id)->with('user')->get();
 
-    public function applicants($id){
-        $applications = JobApplication::where('job_id',$id)->with('user')->get();
-
-        return view('admin.jobs.applied',[
-            'applications' =>$applications,
+        return view('admin.jobs.applied', [
+            'applications' => $applications,
         ]);
     }
-    
-    public function applyJob(Request $request) {
+
+    public function applyJob(Request $request)
+    {
         $id = $request->id;
+        $job = Job::find($id);
 
-        $job = Job::where('id',$id)->first();
-
-        // If job not found in db
         if ($job == null) {
             $message = 'Job does not exist.';
-            session()->flash('error',$message);
-            return response()->json([
-                'status' => false,
-                'message' => $message
-            ]);
+            session()->flash('error', $message);
+            return response()->json(['status' => false, 'message' => $message]);
         }
 
-        // you can not apply on your own job
-        $employer_id = $job->user_id;
+        $employerId = $job->user_id;
 
-        if ($employer_id == Auth::user()->id) {
-            $message = 'You can not apply on your own job.';
-            session()->flash('error',$message);
-            return response()->json([
-                'status' => false,
-                'message' => $message
-            ]);
+        if ($employerId == Auth::user()->id) {
+            $message = 'You cannot apply for your own job.';
+            session()->flash('error', $message);
+            return response()->json(['status' => false, 'message' => $message]);
         }
 
-        // You can not apply on a job twise
-        $jobApplicationCount = JobApplication::where([
-            'user_id' => Auth::user()->id,
-            'job_id' => $id
-        ])->count();
-        
-        if ($jobApplicationCount > 0) {
-            $message = 'You already applied on this job.';
-            session()->flash('error',$message);
-            return response()->json([
-                'status' => false,
-                'message' => $message
-            ]);
-        }
+        $jobApplicationCount = JobApplication::where(['user_id' => Auth::user()->id, 'job_id' => $id])->count();
 
-        $application = new JobApplication();
-        $application->job_id = $id;
-        $application->user_id = Auth::user()->id;
-        $application->employer_id = $employer_id;
-        $application->applied_date = now();
-        $application->save();
-
-
-        // Send Notification Email to Employer
-        $employer = User::where('id',$employer_id)->first();
-        
-        $mailData = [
-            'employer' => $employer,
-            'user' => Auth::user(),
-            'job' => $job,
-        ];
-
-    
-
-
-        Mail::to($employer->email)->send(new JobNotificationEmail($mailData));
-
-        $message = 'You have successfully applied.';
-
-        session()->flash('success',$message);
-
-        return response()->json([
-            'status' => true,
-            'message' => $message
-        ]);
-    }
-    
-    // public function updateProfilecv(Request $request) {
-    //     // dd($request->all());
-
-    //     $id = Auth::user()->id;
-    //     // You can not apply on a job twise
-    //     $jobApplicationCount = JobApplication::where([
-    //         'user_id' => Auth::user()->id,
-    //         'job_id' => $id
-    //     ])->count();
-
-    //     client::create([
-    //         'name'=>$request->name,
-    //         'marital_status'=>$request->marital,
-    //         'age'=>$request->age
-    //     ]);
-    //     $validator = Validator::make($request->all(),[
-    //         'cv' => 'required'
-    //     ]);
-    //     if ($validator->passes()) {
-
-    //         $cv = $request->cv;
-    //         $fileName= uniqid("cv_").".". $request->file('cv')->getClientOriginalExtension();
-    //         $request->file('cv')->move(public_path("cv"),$fileName);
-
-    //         File::delete(public_path('cv'.Auth::user()->cv));
-
-    //         User::where('id',$id)->update(['cv' => $fileName]);
-
-    //         // session()->flash('success','  successfully.');
-    //         return redirect()->back()->with("success","added Successfully");
-
-
-    //     }
-    //     if ($jobApplicationCount > 0) {
-    //         $message = 'You already applied on this job.';
-    //         session()->flash('error',$message);
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => $message
-    //         ]);
-    //     }
-
-
-    //     // File::delete(public_path('cv'.Auth::user()->cv));
-
-    //     // User::where('id',$id)->update(['cv' => $filename]);
-    //     // session()->flash('success','CV Uploaded successfully.');
-    //     // return redirect()->back();
-    // }
-    public function updateProfilecv(Request $request) {
-        $maritalstatus  = MaritalStatus::where('status',1)->get();
-
-        $user = Auth::user();
-        $userId = $user->id;
-    
-        $jobApplicationCount = JobApplication::where([
-            'user_id' => $userId,
-            'job_id' => $request->job_id
-        ])->count();
-    
         if ($jobApplicationCount > 0) {
             $message = 'You already applied for this job.';
             session()->flash('error', $message);
-            return response()->json([
-                'status' => false,
-                'message' => $message
-            ]);
+            return response()->json(['status' => false, 'message' => $message]);
         }
-        $validator = Validator::make($request->all(), [
-            'cv' => 'required|file|mimes:pdf,doc,docx|max:2048'
+
+        $application = JobApplication::create([
+            'job_id' => $id,
+            'user_id' => Auth::user()->id,
+            'employer_id' => $employerId,
+            'applied_date' => now()
         ]);
+
+        // Send Notification Email to Employer
+        $employer = User::find($employerId);
+        $mailData = ['employer' => $employer, 'user' => Auth::user(), 'job' => $job];
+        Mail::to($employer->email)->send(new JobNotificationEmail($mailData));
+
+        $message = 'You have successfully applied.';
+        session()->flash('success', $message);
+
+        return response()->json(['status' => true, 'message' => $message]);
+    }
+
+    public function updateProfilecv(Request $request)
+    {
+        $user = Auth::user();
+        $userId = $user->id;
+
+        $validator = Validator::make($request->all(), [
+            'cv' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'job_id' => 'required|exists:jobs,id'
+        ]);
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-    
-        // client::create([
-        //     'name'=> $request->name,
-        //     'marital_status' => $request->marital,
-        //     'age' => $request->age
-        // ]);
+
         $cv = $request->file('cv');
         $fileName = uniqid("cv_") . "." . $cv->getClientOriginalExtension();
         $cv->move(public_path("cv"), $fileName);
-    
+
         if ($user->cv) {
             File::delete(public_path('cv/' . $user->cv));
         }
 
         $user->update(['cv' => $fileName]);
-    
+
         session()->flash('success', 'CV added successfully.');
-        return view('front.jobDetail',compact('maritalstatus'))->with('success', 'CV added successfully.');
-    
+        return redirect()->route('job.detail', ['id' => $request->job_id]);
     }
 
-    public function savedJob(Request $request) {
 
+    public function savedJob(Request $request)
+    {
         $id = $request->id;
-
         $job = Job::find($id);
 
         if ($job == null) {
-            session()->flash('error','Job not found');
-
             return response()->json([
                 'status' => false,
-                // 'errors' => errors()
-            ]);
+                'message' => 'Job not found'
+            ], 404);
         }
 
-             // Check if user already saved the job
-            $count = SavedJob::where([
-                'user_id' => Auth::user()->id,
-                'job_id' => $id
-            ])->count();
-    
-            if ($count > 0) {
-                session()->flash('error','You already saved this job.');
-    
-                return redirect()->route('jobDetail',$job->id)->with("error","You already saved this job.");
-            }
-    
-            $savedJob = new SavedJob;
-            $savedJob->job_id = $id;
-            $savedJob->user_id = Auth::user()->id;
-            $savedJob->save();
-    
-            session()->flash('success','You have successfully saved the job.');
-    
-            return response()->json([
-                'status' => true,
-            ]);
-        // return view('account.job.saved-jobs');
+        $count = SavedJob::where([
+            'user_id' => Auth::user()->id,
+            'job_id' => $id
+        ])->count();
 
+        if ($count > 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'You already saved this job.'
+            ], 400);
+        }
+
+        SavedJob::create([
+            'job_id' => $id,
+            'user_id' => Auth::user()->id
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'You have successfully saved the job.'
+        ], 200);
     }
 
 }

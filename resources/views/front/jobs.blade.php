@@ -3,10 +3,10 @@
 
 @section('main')
 <section class="section-3 py-5 bg-2 ">
-    <div class="container">     
+    <div class="container">
         <div class="row">
             <div class="col-6 col-md-10 ">
-                <h2>Find Jobs</h2>  
+                <h2>Find Jobs</h2>
             </div>
             {{-- <div class="col-6 col-md-2">
                 <div class="align-end">
@@ -48,8 +48,8 @@
                         <h2>Job Type</h2>
                             @foreach ($jobTypes as $jobType )
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input " name="job_type" type="checkbox" value="{{ $jobType->id }}" id="job_type{{ $jobType->id }}">    
-                                    <label class="form-check-label " for="job_type{{ $jobType->id }}">{{ $jobType->name }}</label>
+                                    <input class="form-check-input " name="job_type" type="checkbox" value="{{ $jobType->id }}" id="job_type_{{ $jobType->id }}">
+                                    <label class="form-check-label " for="job_type_{{ $jobType->id }}">{{ $jobType->name }}</label>
                                 </div>
                             @endforeach
                     </div>
@@ -73,7 +73,7 @@
                     <button class="btn Explore btn-lg" type="submit">Search</button>
                     <a href="{{ route("jobs") }}" class="btn outline mt-3">Reset</a>
                 </div>
-                
+
             </form>
             </div>
             <div class="col-md-8 col-lg-9 ">
@@ -103,9 +103,9 @@
                                             </p>
                                             @endif
                                         </div>
-    
+
                                         <div class="d-grid mt-3">
-                                            <a href="{{ route('jobDetail',$job->id) }}" class="btn Explore btn-lg">Details</a>
+                                            <a href="{{ route('job.detail',$job->id) }}" class="btn Explore btn-lg">Details</a>
                                         </div>
                                     </div>
                                 </div>
@@ -122,7 +122,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </section>
@@ -173,7 +173,7 @@
         url += '&sort='+sort;
 
         window.location.href=url;
-        
+
     });
 
     $("#sort").change(function(){

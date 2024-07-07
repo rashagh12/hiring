@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RundomNumber extends Model
+class RandomNumber extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['number'];
 }
